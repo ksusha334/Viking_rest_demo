@@ -14,7 +14,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
 
-
 public class VikingDesktopFrame extends JFrame {
 
     private final VikingService vikingService;
@@ -37,6 +36,9 @@ public class VikingDesktopFrame extends JFrame {
         vikingTable.setRowHeight(28);
         add(new JScrollPane(vikingTable), BorderLayout.CENTER);
 
+        // Связываем сервис с таблицей
+        vikingService.setTableModel(tableModel);
+
         JButton createButton = new JButton("Create random viking");
         createButton.addActionListener(event -> onCreateViking());
 
@@ -46,11 +48,6 @@ public class VikingDesktopFrame extends JFrame {
     }
 
     private void onCreateViking() {
-        Viking viking = vikingService.createRandomViking();
-        tableModel.addViking(viking);
-    }
-    
-    public void addNewViking(Viking viking){
-        tableModel.addViking(viking);
+        vikingService.createRandomViking();
     }
 }
