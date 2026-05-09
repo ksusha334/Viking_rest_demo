@@ -1,66 +1,73 @@
 package ru.mephi.vikingdemo.service;
 
+import java.util.ArrayList;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.mephi.vikingdemo.gui.VikingTableModel;
 import ru.mephi.vikingdemo.model.Viking;
+import ru.mephi.vikingdemo.repository.VikingRepository;
 
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-import org.springframework.beans.factory.annotation.Autowired;
 
 @Service
 public class VikingService {
     
-    private final CopyOnWriteArrayList<Viking> vikings = new CopyOnWriteArrayList<>();
-    private final VikingFactory vikingFactory;
-    private VikingTableModel tableModel;
+    @Autowired
+    private VikingRepository vikingRepository;
     
     @Autowired
-    public VikingService(VikingFactory vikingFactory) {
-        this.vikingFactory = vikingFactory;
-    }
+    private VikingFactory vikingFactory;
+    
+    private VikingTableModel tableModel;
     
     public void setTableModel(VikingTableModel tableModel) {
         this.tableModel = tableModel;
-        tableModel.setVikings(vikings);
+        refreshGui();
     }
     
     public List<Viking> findAll() {
-        return List.copyOf(vikings);
+        List<Viking> all = vikingRepository.findAll();
+        System.out.println("findAll returned " + (all != null ? all.size() : "null") + " vikings");
+        return all != null ? all : new ArrayList<>();
     }
     
     public Viking createRandomViking() {
         Viking viking = vikingFactory.createRandomViking();
-        vikings.add(viking);
+        Viking saved = vikingRepository.save(viking);
         refreshGui();
-        return viking;
+        return saved;
     }
     
     public Viking save(Viking viking) {
-        vikings.add(viking);
+        Viking saved = vikingRepository.save(viking);
         refreshGui();
-        return viking;
+        return saved;
     }
     
-    public void deleteById(int index) {
-        if (index >= 0 && index < vikings.size()) {
-            vikings.remove(index);
-            refreshGui();
-        }
+    public void deleteById(Long id) {
+        vikingRepository.deleteById(id);
+        refreshGui();
     }
     
-    public Viking update(int index, Viking newViking) {
-        if (index >= 0 && index < vikings.size()) {
-            vikings.set(index, newViking);
-            refreshGui();
-            return newViking;
+    public Viking update(Viking viking) {
+        Viking saved = vikingRepository.save(viking);
+        refreshGui();
+        return saved;
+    }
+    
+    public List<Viking> generateManyRandom(int count) {
+        List<Viking> newVikings = new java.util.ArrayList<>();
+        for (int i = 0; i < count; i++) {
+            newVikings.add(vikingFactory.createRandomViking());
         }
-        throw new RuntimeException("Викинг не найден по индексу: " + index);
+        List<Viking> saved = vikingRepository.saveAll(newVikings);
+        refreshGui();
+        return saved;
     }
     
     private void refreshGui() {
         if (tableModel != null) {
-            tableModel.setVikings(vikings);
+            tableModel.setVikings(vikingRepository.findAll());
         }
     }
 }

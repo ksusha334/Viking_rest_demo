@@ -20,14 +20,21 @@ public class VikingTableModel extends AbstractTableModel {
     }
 
     public void setVikings(List<Viking> newVikings) {
+        System.out.println("setVikings: received " + (newVikings != null ? newVikings.size() : "null") + " vikings");
         data.clear();
-        data.addAll(newVikings);
+        if (newVikings != null) {
+            data.addAll(newVikings);
+        }
+        // КРИТИЧЕСКИ ВАЖНО — уведомляем таблицу, что данные изменились
         fireTableDataChanged();
+        System.out.println("setVikings: data now has " + data.size() + " rows, fireTableDataChanged called");
     }
 
     @Override
     public int getRowCount() {
-        return data.size();
+        int size = data.size();
+        System.out.println("getRowCount called: " + size);
+        return size;
     }
 
     @Override
@@ -44,19 +51,19 @@ public class VikingTableModel extends AbstractTableModel {
     public Object getValueAt(int rowIndex, int columnIndex) {
         Viking viking = data.get(rowIndex);
         return switch (columnIndex) {
-            case 0 -> viking.name();
-            case 1 -> viking.age();
-            case 2 -> viking.heightCm();
-            case 3 -> viking.hairColor();
-            case 4 -> viking.beardStyle();
-            case 5 -> formatEquipment(viking.equipment());
+            case 0 -> viking.getName();
+            case 1 -> viking.getAge();
+            case 2 -> viking.getHeightCm();
+            case 3 -> viking.getHairColor();
+            case 4 -> viking.getBeardStyle();
+            case 5 -> formatEquipment(viking.getEquipment());
             default -> "";
         };
     }
 
     private String formatEquipment(List<EquipmentItem> equipment) {
         return equipment.stream()
-                .map(item -> item.name() + " [" + item.quality() + "]")
+                .map(item -> item.getName() + " [" + item.getQuality() + "]")
                 .collect(Collectors.joining(", "));
     }
 }

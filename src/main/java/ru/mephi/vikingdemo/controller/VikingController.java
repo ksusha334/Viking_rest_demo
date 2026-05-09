@@ -29,15 +29,16 @@ public class VikingController {
         return new ResponseEntity<>(saved, HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/{index}")
-    public ResponseEntity<Void> deleteViking(@PathVariable int index) {
-        vikingService.deleteById(index);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteViking(@PathVariable Long id) {
+        vikingService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/{index}")
-    public ResponseEntity<Viking> updateViking(@PathVariable int index, @RequestBody Viking viking) {
-        Viking updated = vikingService.update(index, viking);
+    @PutMapping("/{id}")
+    public ResponseEntity<Viking> updateViking(@PathVariable Long id, @RequestBody Viking viking) {
+        viking.setId(id);
+        Viking updated = vikingService.update(viking);
         return ResponseEntity.ok(updated);
     }
 }
