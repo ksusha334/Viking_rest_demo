@@ -3,7 +3,6 @@ package ru.mephi.vikingdemo.service;
 import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.mephi.vikingdemo.gui.VikingTableModel;
 import ru.mephi.vikingdemo.model.Viking;
 import ru.mephi.vikingdemo.repository.VikingRepository;
 
