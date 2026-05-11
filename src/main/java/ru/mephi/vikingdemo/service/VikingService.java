@@ -18,40 +18,41 @@ public class VikingService {
     @Autowired
     private VikingFactory vikingFactory;
     
-    private VikingTableModel tableModel;
-    
-    public void setTableModel(VikingTableModel tableModel) {
-        this.tableModel = tableModel;
-        refreshGui();
+    private final List<Runnable> listeners = new ArrayList<>();
+    public void addListener(Runnable listener) {
+        listeners.add(listener);
+    }
+    private void notifyListeners() {
+        for (Runnable listener : listeners) {
+            listener.run();
+        }
     }
     
     public List<Viking> findAll() {
-        List<Viking> all = vikingRepository.findAll();
-        System.out.println("findAll returned " + (all != null ? all.size() : "null") + " vikings");
-        return all != null ? all : new ArrayList<>();
+        return vikingRepository.findAll();
     }
     
     public Viking createRandomViking() {
         Viking viking = vikingFactory.createRandomViking();
         Viking saved = vikingRepository.save(viking);
-        refreshGui();
+        notifyListeners();
         return saved;
     }
     
     public Viking save(Viking viking) {
         Viking saved = vikingRepository.save(viking);
-        refreshGui();
+        notifyListeners();
         return saved;
     }
     
     public void deleteById(Long id) {
         vikingRepository.deleteById(id);
-        refreshGui();
+        notifyListeners();
     }
     
     public Viking update(Viking viking) {
         Viking saved = vikingRepository.save(viking);
-        refreshGui();
+        notifyListeners();
         return saved;
     }
     
@@ -61,13 +62,7 @@ public class VikingService {
             newVikings.add(vikingFactory.createRandomViking());
         }
         List<Viking> saved = vikingRepository.saveAll(newVikings);
-        refreshGui();
+        notifyListeners();
         return saved;
-    }
-    
-    private void refreshGui() {
-        if (tableModel != null) {
-            tableModel.setVikings(vikingRepository.findAll());
-        }
     }
 }

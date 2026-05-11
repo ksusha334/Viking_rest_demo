@@ -31,13 +31,16 @@ public class VikingDesktopFrame extends JFrame {
         header.setFont(header.getFont().deriveFont(Font.BOLD, 18f));
         add(header, BorderLayout.NORTH);
 
-        // Создаём таблицу
         JTable vikingTable = new JTable(tableModel);
         vikingTable.setRowHeight(28);
-        JScrollPane scrollPane = new JScrollPane(vikingTable);
-        add(scrollPane, BorderLayout.CENTER);
+        add(new JScrollPane(vikingTable), BorderLayout.CENTER);
 
-        // Кнопки
+        vikingService.addListener(() -> {
+            tableModel.setVikings(vikingService.findAll());
+        });
+
+        tableModel.setVikings(vikingService.findAll());
+
         JButton createButton = new JButton("Create random viking");
         createButton.addActionListener(event -> onCreateViking());
 
@@ -48,20 +51,6 @@ public class VikingDesktopFrame extends JFrame {
         bottomPanel.add(createButton);
         bottomPanel.add(massButton);
         add(bottomPanel, BorderLayout.SOUTH);
-
-        // Отложенная связка с сервисом и загрузка данных
-        javax.swing.Timer timer = new javax.swing.Timer(500, e -> {
-            System.out.println("Timer: connecting service to table");
-            vikingService.setTableModel(tableModel);
-            System.out.println("Timer: loading data");
-            tableModel.setVikings(vikingService.findAll());
-            // Принудительно просим таблицу перерисоваться
-            vikingTable.revalidate();
-            vikingTable.repaint();
-            System.out.println("Timer: done");
-        });
-        timer.setRepeats(false);
-        timer.start();
     }
 
     private void onCreateViking() {

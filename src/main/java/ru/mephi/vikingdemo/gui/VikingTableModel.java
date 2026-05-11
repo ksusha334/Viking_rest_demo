@@ -25,7 +25,6 @@ public class VikingTableModel extends AbstractTableModel {
         if (newVikings != null) {
             data.addAll(newVikings);
         }
-        // КРИТИЧЕСКИ ВАЖНО — уведомляем таблицу, что данные изменились
         fireTableDataChanged();
         System.out.println("setVikings: data now has " + data.size() + " rows, fireTableDataChanged called");
     }
