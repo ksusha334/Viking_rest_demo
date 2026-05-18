@@ -64,12 +64,12 @@ public long countByAge( @Parameter(description = "Возраст для срав
     }
 
     @GetMapping("/max-id")
-    public Long getMaxId() {
+    public int getMaxId() {
         return statsService.getMaxId(vikingService.findAll());
     }
 
     @GetMapping("/even-ids")
-    public List<Long> getEvenIds() {
+    public int[] getEvenIds() {
         return statsService.getEvenIds(vikingService.findAll());
     }
 }

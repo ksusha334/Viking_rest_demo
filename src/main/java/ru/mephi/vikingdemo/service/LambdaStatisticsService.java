@@ -64,17 +64,18 @@ public class LambdaStatisticsService {
                 .toList();
     }
 
-    public Long getMaxId(List<Viking> vikings) {
+    public int getMaxId(List<Viking> vikings) {
         return vikings.stream()
-                .map(Viking::getId)
-                .max(Long::compareTo)
-                .orElse(null);
+                .mapToInt(v -> v.getId().intValue())
+                .max()
+                .orElse(-1);
     }
 
-    public List<Long> getEvenIds(List<Viking> vikings) {
+
+    public int[] getEvenIds(List<Viking> vikings) {
         return vikings.stream()
-                .map(Viking::getId)
-                .filter(id -> id != null && id % 2 == 0)
-                .toList();
+                .mapToInt(v -> v.getId().intValue())
+                .filter(id -> id % 2 == 0)
+                .toArray();
     }
 }
