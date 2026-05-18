@@ -56,10 +56,11 @@ public class VikingService {
     }
     
     public List<Viking> generateManyRandom(int count) {
-        List<Viking> newVikings = new java.util.ArrayList<>();
-        for (int i = 0; i < count; i++) {
-            newVikings.add(vikingFactory.createRandomViking());
-        }
+        List<Viking> newVikings = java.util.stream.Stream
+                .generate(() -> vikingFactory.createRandomViking())
+                .limit(count)
+                .collect(java.util.stream.Collectors.toList());
+        
         List<Viking> saved = vikingRepository.saveAll(newVikings);
         notifyListeners();
         return saved;

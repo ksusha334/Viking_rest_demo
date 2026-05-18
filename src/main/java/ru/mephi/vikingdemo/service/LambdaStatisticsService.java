@@ -59,20 +59,22 @@ public class LambdaStatisticsService {
 
     public List<Viking> getRedBeardedSortedByAge(List<Viking> vikings) { //сортированный по возрасту список рыжебородых викингов
         return vikings.stream()
-                .filter(v -> v.getHairColor() == HairColor.Red)
+                .filter(v -> v.getHairColor() == HairColor.Red && v.getBeardStyle() != BeardStyle.CLEAN_SHAVEN)
                 .sorted(Comparator.comparingInt(Viking::getAge))
                 .toList();
     }
 
-    public Viking getMaxId(List<Viking> vikings) { //Найти последнюю запись (max ID)
-        return vikings.stream()             
-                .max((v1, v2) -> v1.getId().compareTo(v2.getId()))
+    public Long getMaxId(List<Viking> vikings) {
+        return vikings.stream()
+                .map(Viking::getId)
+                .max(Long::compareTo)
                 .orElse(null);
     }
 
-    public List<Viking> getEvenIds(List<Viking> vikings) { //Все четные ID
-        return vikings.stream()                     
-                .filter(v -> v.getId() != null && v.getId() % 2 == 0)  
+    public List<Long> getEvenIds(List<Viking> vikings) {
+        return vikings.stream()
+                .map(Viking::getId)
+                .filter(id -> id != null && id % 2 == 0)
                 .toList();
     }
 }
