@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class LambdaStatisticsService {
-    public long countByAge(List<Viking> vikings, int age, String condition) {
+    public long countByAge(List<Viking> vikings, int age, String condition) { //Условиям по возрасту (больше, меньше, в диапазоне, вне диапазона)
         return switch (condition) {
             case "older" -> vikings.stream().filter(v -> v.getAge() > age).count();
             case "younger" -> vikings.stream().filter(v -> v.getAge() < age).count();
@@ -23,13 +23,13 @@ public class LambdaStatisticsService {
         };
     }
 
-    public long countByBeardAndHair(List<Viking> vikings, BeardStyle beard, HairColor hair) {
+    public long countByBeardAndHair(List<Viking> vikings, BeardStyle beard, HairColor hair) { //Условиям по форме бороды И цвету волос (одновременное)
         return vikings.stream()
                 .filter(v -> v.getBeardStyle() == beard && v.getHairColor() == hair)
                 .count();
     }
 
-    public long countByAxesCount(List<Viking> vikings, int axesCount) {
+    public long countByAxesCount(List<Viking> vikings, int axesCount) { //Имеющих один топор или два топора
         return vikings.stream()
                 .filter(v -> countAxes(v.getEquipment()) == axesCount)
                 .count();
@@ -41,7 +41,7 @@ public class LambdaStatisticsService {
                 .count();
     }
 
-    public Viking getRandomVikingAboveHeight(List<Viking> vikings, int minHeight) {
+    public Viking getRandomVikingAboveHeight(List<Viking> vikings, int minHeight) { //Случайного викинга ростом выше 180
         List<Viking> filtered = vikings.stream()
                 .filter(v -> v.getHeightCm() > minHeight)
                 .toList();
@@ -53,28 +53,26 @@ public class LambdaStatisticsService {
     public List<Viking> getVikingsWithLegendaryGear(List<Viking> vikings) {
         return vikings.stream()
                 .filter(v -> v.getEquipment().stream()
-                        .anyMatch(item -> "Legendary".equalsIgnoreCase(item.getQuality())))
+                .anyMatch(item -> "Legendary".equalsIgnoreCase(item.getQuality()))) //Всех викингов с легендарным снаряжением
                 .toList();
     }
 
-    public List<Viking> getRedBeardedSortedByAge(List<Viking> vikings) {
+    public List<Viking> getRedBeardedSortedByAge(List<Viking> vikings) { //сортированный по возрасту список рыжебородых викингов
         return vikings.stream()
-                .filter(v -> v.getBeardStyle() == BeardStyle.LONG && v.getHairColor() == HairColor.Red)
+                .filter(v -> v.getHairColor() == HairColor.Red)
                 .sorted(Comparator.comparingInt(Viking::getAge))
                 .toList();
     }
 
-    public Long getMaxId(List<Viking> vikings) {
-        return vikings.stream()
-                .map(Viking::getId)
-                .max(Long::compareTo)
-                .orElse(-1L);
+    public Viking getMaxId(List<Viking> vikings) { //Найти последнюю запись (max ID)
+        return vikings.stream()             
+                .max((v1, v2) -> v1.getId().compareTo(v2.getId()))
+                .orElse(null);
     }
 
-    public List<Long> getEvenIds(List<Viking> vikings) {
-        return vikings.stream()
-                .map(Viking::getId)
-                .filter(id -> id != null && id % 2 == 0)
+    public List<Viking> getEvenIds(List<Viking> vikings) { //Все четные ID
+        return vikings.stream()                     
+                .filter(v -> v.getId() != null && v.getId() % 2 == 0)  
                 .toList();
     }
 }

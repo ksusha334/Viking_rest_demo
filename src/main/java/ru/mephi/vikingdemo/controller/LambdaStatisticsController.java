@@ -4,6 +4,7 @@
  */
 package ru.mephi.vikingdemo.controller;
 
+import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.web.bind.annotation.*;
 import ru.mephi.vikingdemo.model.BeardStyle;
 import ru.mephi.vikingdemo.model.HairColor;
@@ -29,20 +30,24 @@ public class LambdaStatisticsController {
     }
 
     @GetMapping("/age/count")
-    public long countByAge(@RequestParam int age, @RequestParam String condition) {
-        return statsService.countByAge(vikingService.findAll(), age, condition);
+public long countByAge( @Parameter(description = "Возраст для сравнения (например, 30)") @RequestParam int age,
+        @Parameter(description = "Условие: older (больше), younger (меньше), between (от age до age+10), outside (вне диапазона)")
+        @RequestParam String condition) {
+    return statsService.countByAge(vikingService.findAll(), age, condition);
+}
+
+    @GetMapping("/axes/count")
+    public long countByAxes(
+            @Parameter(description = "Количество топоров: 1 или 2")
+            @RequestParam int axesCount) {
+        return statsService.countByAxesCount(vikingService.findAll(), axesCount);
     }
 
     @GetMapping("/beard-hair/count")
     public long countByBeardAndHair(@RequestParam BeardStyle beard, @RequestParam HairColor hair) {
         return statsService.countByBeardAndHair(vikingService.findAll(), beard, hair);
     }
-
-    @GetMapping("/axes/count")
-    public long countByAxes(@RequestParam int axesCount) {
-        return statsService.countByAxesCount(vikingService.findAll(), axesCount);
-    }
-
+    
     @GetMapping("/random-above-height")
     public Viking getRandomAboveHeight(@RequestParam int minHeight) {
         return statsService.getRandomVikingAboveHeight(vikingService.findAll(), minHeight);
@@ -59,12 +64,12 @@ public class LambdaStatisticsController {
     }
 
     @GetMapping("/max-id")
-    public Long getMaxId() {
+    public Viking getMaxId() {
         return statsService.getMaxId(vikingService.findAll());
     }
 
     @GetMapping("/even-ids")
-    public List<Long> getEvenIds() {
+    public List<Viking> getEvenIds() {
         return statsService.getEvenIds(vikingService.findAll());
     }
 }
