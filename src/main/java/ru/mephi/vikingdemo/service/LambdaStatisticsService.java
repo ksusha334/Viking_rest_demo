@@ -65,17 +65,32 @@ public class LambdaStatisticsService {
     }
 
     public int getMaxId(List<Viking> vikings) {
-        return vikings.stream()
+        int[] ids = vikings.stream()
                 .mapToInt(v -> v.getId().intValue())
-                .max()
-                .orElse(-1);
+                .toArray();
+        int max = -1;
+        for (int id : ids) {
+            if (id > max) {
+                max = id;
+            }
+        }
+        return max;
     }
 
-
     public int[] getEvenIds(List<Viking> vikings) {
-        return vikings.stream()
+        int[] ids = vikings.stream()
                 .mapToInt(v -> v.getId().intValue())
-                .filter(id -> id % 2 == 0)
                 .toArray();
+        java.util.ArrayList<Integer> evenList = new java.util.ArrayList<>();
+        for (int id : ids) {
+            if (id % 2 == 0) {
+                evenList.add(id);
+            }
+        }
+        int[] result = new int[evenList.size()];
+        for (int i = 0; i < evenList.size(); i++) {
+            result[i] = evenList.get(i);
+        }
+        return result;
     }
 }
